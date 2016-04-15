@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <context:annotation-config/>
+    <bean id="v2redisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+        p:hostName="192.168.1.112"
+        p:port="6379"
+        p:database="16"
+        p:usePool="true"
+    >
+    </bean>
+    <bean class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration"/>
+    <bean id="stringRedisSerializer"
+          class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+
+    <bean id="v2redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+    >
+        <property name="connectionFactory" ref="v2redisConnectionFactory"/>
+        <property name="keySerializer" ref="stringRedisSerializer"></property>
+        <property name="valueSerializer" ref="stringRedisSerializer"></property>
+        <property name="hashKeySerializer" ref="stringRedisSerializer"></property>
+        <property name="hashValueSerializer" ref="stringRedisSerializer"></property>
+    </bean>
+    <!-- 这里的是为了下面的 Session策略过滤器提供构造函数传入的参数，因为Session过滤器要依赖该对象来构造，所以创建一个先 -->
+    <bean name="redisOperationsSessionRepository" class="org.springframework.session.data.redis.RedisOperationsSessionRepository">
+        <constructor-arg ref="v2redisConnectionFactory"></constructor-arg>
+    </bean>
+
+    <!-- 这个是Session策略过滤器，即将容器原有的Session持久化机制，代替为Spring的 Redis持久化Session机制。 -->
+    <!-- 注意，这个名字与 web.xml里的targetBean的下value是要一致的。 -->
+    <bean name="springSession" class="org.springframework.session.web.http.SessionRepositoryFilter">
+        <constructor-arg ref="redisOperationsSessionRepository"></constructor-arg>
+    </bean>
+
+</beans>
