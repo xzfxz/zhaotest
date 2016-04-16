@@ -53,7 +53,7 @@
 
     <servlet>
         <servlet-name>ServletSession</servlet-name>
-        <servlet-class>com.zhao.dotest.test.SessionServlet</servlet-class>
+        <servlet-class>com.zhao.dotest.SessionServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ServletSession</servlet-name>

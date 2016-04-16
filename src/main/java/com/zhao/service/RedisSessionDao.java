@@ -6,8 +6,8 @@ package com.zhao.service;
 
 import java.io.Serializable;
 
-import com.zhao.dotest.test.RedisUtil;
-import com.zhao.dotest.test.SerializeUtil;
+import com.zhao.util.RedisUtil;
+import com.zhao.util.SerializeUtil;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.ValidatingSession;
 import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
