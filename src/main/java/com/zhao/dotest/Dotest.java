@@ -10,14 +10,32 @@ import redis.clients.jedis.Jedis;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.*;
 
 /**
  * Created by Administrator on 2016/4/6.
  */
 public class Dotest {
+    @Test
+    public void test08(){
+        Charset charset = Charset.defaultCharset();
+        ByteBuffer bb =  charset.encode("bb你好");
+        byte[] array = bb.array();
+        System.out.println(new String(array));
+    }
+    @Test
+    public void test07(){
+        SortedMap<String, Charset> map = Charset.availableCharsets();
+        Iterator<String> iterator = map.keySet().iterator();
+        while (iterator.hasNext()){
+            String next = iterator.next();
+            Charset charset = map.get(next);
+            System.out.println(next+"- - -"+charset);
+        }
+    }
+    
     @Test
     public void test06(){
         Jedis jedis = RedisUtil.getJedis();
