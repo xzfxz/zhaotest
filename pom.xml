@@ -62,6 +62,11 @@
       <classifier>jdk15</classifier>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.6.2</version>
+    </dependency>
     <!--加入了短信验证时候的dom4j的依赖-->
     <dependency>
       <groupId>dom4j</groupId>
