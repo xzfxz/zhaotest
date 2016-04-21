@@ -15,7 +15,7 @@ import java.util.Map;
 public class HttpRequestJson {
 
 
-    public static String sendPost(String tourl,Map<String,String> map) {
+    public static String sendPost(String tourl,Map<String,Object> map) {
         String rtn = null;
         try {
             //创建连接
@@ -27,18 +27,19 @@ public class HttpRequestJson {
             connection.setRequestMethod("POST");
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
-            connection.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
+            connection.setConnectTimeout(20000);
+            connection.setReadTimeout(300000);
+//            connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
 
+            connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
             connection.connect();
 
             //POST请求
             DataOutputStream out = new DataOutputStream(
                     connection.getOutputStream());
 
-            JSONObject object = JSONObject.fromObject(map);
-
-            out.writeBytes(object.toString());
+            JSONObject obj = JSONObject.fromObject(map);
+            out.write(obj.toString().getBytes("utf-8"));
             out.flush();
             out.close();
 

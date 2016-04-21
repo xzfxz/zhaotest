@@ -1,9 +1,11 @@
 package com.zhao.dotest;
 
+import com.sun.corba.se.impl.ior.OldJIDLObjectKeyTemplate;
 import com.zhao.entity.UserInfo;
 import com.zhao.util.JavaBase64;
 import com.zhao.util.RedisUtil;
 import com.zhao.util.SerializeUtil;
+import net.sf.json.JSONObject;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
 
@@ -18,6 +20,21 @@ import java.util.*;
  * Created by Administrator on 2016/4/6.
  */
 public class Dotest {
+    @Test
+    public void test09(){
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("identity","13682046273");
+        map.put("salt","435253");
+        map.put("password","414a0648ced58fc8444b8ed1223deac5");
+        JSONObject obj = JSONObject.fromObject(map);
+//        JSONObject obj = new JSONObject();
+//        obj.element("app_name", "asdf");
+//        obj.element("app_ip", "10.21.243.234");
+//        obj.element("app_port", 8080);
+//        obj.element("app_type", "001");
+//        obj.element("app_area", "asd");
+        System.out.println(obj);
+    }
     @Test
     public void test08(){
         Charset charset = Charset.defaultCharset();
