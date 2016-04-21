@@ -30,7 +30,7 @@ public class HttpRequestJson {
             connection.setConnectTimeout(20000);
             connection.setReadTimeout(300000);
 //            connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-
+//发送json数据的类型，415，类型不匹配
             connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
             connection.connect();
 
@@ -52,7 +52,6 @@ public class HttpRequestJson {
                 lines = new String(lines.getBytes(), "utf-8");
                 sb.append(lines);
             }
-            System.out.println(sb);
             rtn = sb.toString();
             reader.close();
             // 断开连接
