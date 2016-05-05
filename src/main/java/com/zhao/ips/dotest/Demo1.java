@@ -1,9 +1,9 @@
 package com.zhao.ips.dotest;
 
-import ToolClass.Config;
-import ToolClass.XmlTool1;
 
-public class Demo1 
+import com.zhao.ips.tool.Config;
+
+public class Demo1
 {
 	public static void main(String[] args) 
 	{

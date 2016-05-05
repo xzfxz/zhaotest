@@ -1,7 +1,7 @@
 package com.zhao.dotest;
 
-import com.sun.corba.se.impl.ior.OldJIDLObjectKeyTemplate;
 import com.zhao.entity.UserInfo;
+import com.zhao.util.DayMonthYear;
 import com.zhao.util.JavaBase64;
 import com.zhao.util.RedisUtil;
 import com.zhao.util.SerializeUtil;
@@ -21,7 +21,34 @@ import java.util.*;
  */
 public class Dotest {
     @Test
+    public void test10(){
+
+            DayMonthYear st = new DayMonthYear();
+            try {
+                String liD = st.getDayDate("2015-08-01", "2015-8-31");
+                String listM = st.getMonthDate("2015-08", "2015-10");
+                String listY = st.getYearDate("2013", "2015");
+                System.out.println(liD);
+                System.out.println(listM);
+                System.out.println(listY);
+//			for(int i=0;i<listY.size();i++){
+//				System.out.println(listY.get(i));
+//			}
+//			for(int i=0;i<listM.size();i++){
+//				System.out.println(listM.get(i));
+//			}
+//			for (int i = 0; i < liD.size(); i++) {
+//				System.out.println(liD.get(i));
+//			}
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+    }
+    @Test
     public void test09(){
+
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("identity","13682046273");
         map.put("salt","435253");
@@ -37,6 +64,7 @@ public class Dotest {
     }
     @Test
     public void test08(){
+
         Charset charset = Charset.defaultCharset();
         ByteBuffer bb =  charset.encode("bb你好");
         byte[] array = bb.array();

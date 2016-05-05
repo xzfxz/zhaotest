@@ -29,7 +29,7 @@ public class YDMSM {
 	//发送短信时候需要map中指定 phone 以及 content 内容
 	// 返回的内容如果为Faild则失败，Success 则成功
 	public static String sendMessage(String[] params) throws Exception {
-		String result = null;
+		String result = "Faild";
 		result = parseXml(params);
 		return result;
 	}
