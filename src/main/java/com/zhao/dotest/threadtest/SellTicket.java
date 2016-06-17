@@ -6,7 +6,6 @@ package com.zhao.dotest.threadtest;
 public class SellTicket implements Runnable {
     private Object obj = new Object();
     private Ticket ticket;
-
     public SellTicket(Ticket ticket) {
         this.ticket = ticket;
     }

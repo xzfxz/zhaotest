@@ -33,69 +33,22 @@ package com.zhao.nanohttpd;
  * #L%
  */
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLDecoder;
+import javax.net.ssl.*;
+import java.io.*;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.security.KeyStore;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
-
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
-
-import fi.iki.elonen.NanoHTTPD.Response.IStatus;
-import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 /**
  * A simple, tiny, nicely embeddable HTTP server in Java
@@ -181,7 +134,7 @@ public abstract class NanoHTTPD {
             safeClose(this.acceptSocket);
         }
 
-        @Override
+       
         public void run() {
             OutputStream outputStream = null;
             try {
@@ -282,7 +235,7 @@ public abstract class NanoHTTPD {
             set(name, "-delete-", -30);
         }
 
-        @Override
+       
         public Iterator<String> iterator() {
             return this.cookies.keySet().iterator();
         }
@@ -353,7 +306,7 @@ public abstract class NanoHTTPD {
             return running;
         }
 
-        @Override
+       
         public void closeAll() {
             // copy of the list for concurrency
             for (ClientHandler clientHandler : new ArrayList<ClientHandler>(this.running)) {
@@ -361,12 +314,12 @@ public abstract class NanoHTTPD {
             }
         }
 
-        @Override
+       
         public void closed(ClientHandler clientHandler) {
             this.running.remove(clientHandler);
         }
 
-        @Override
+       
         public void exec(ClientHandler clientHandler) {
             ++this.requestCount;
             Thread t = new Thread(clientHandler);
@@ -396,7 +349,7 @@ public abstract class NanoHTTPD {
             this.fstream = new FileOutputStream(this.file);
         }
 
-        @Override
+       
         public void delete() throws Exception {
             safeClose(this.fstream);
             if (!this.file.delete()) {
@@ -404,12 +357,12 @@ public abstract class NanoHTTPD {
             }
         }
 
-        @Override
+       
         public String getName() {
             return this.file.getAbsolutePath();
         }
 
-        @Override
+       
         public OutputStream open() throws Exception {
             return this.fstream;
         }
@@ -439,7 +392,7 @@ public abstract class NanoHTTPD {
             this.tempFiles = new ArrayList<TempFile>();
         }
 
-        @Override
+       
         public void clear() {
             for (TempFile file : this.tempFiles) {
                 try {
@@ -451,7 +404,7 @@ public abstract class NanoHTTPD {
             this.tempFiles.clear();
         }
 
-        @Override
+       
         public TempFile createTempFile(String filename_hint) throws Exception {
             DefaultTempFile tempFile = new DefaultTempFile(this.tmpdir);
             this.tempFiles.add(tempFile);
@@ -464,7 +417,7 @@ public abstract class NanoHTTPD {
      */
     private class DefaultTempFileManagerFactory implements TempFileManagerFactory {
 
-        @Override
+       
         public TempFileManager create() {
             return new DefaultTempFileManager();
         }
@@ -475,7 +428,7 @@ public abstract class NanoHTTPD {
      */
     public static class DefaultServerSocketFactory implements ServerSocketFactory {
 
-        @Override
+       
         public ServerSocket create() throws IOException {
             return new ServerSocket();
         }
@@ -496,7 +449,7 @@ public abstract class NanoHTTPD {
             this.sslProtocols = sslProtocols;
         }
 
-        @Override
+       
         public ServerSocket create() throws IOException {
             SSLServerSocket ss = null;
             ss = (SSLServerSocket) this.sslServerSocketFactory.createServerSocket();
@@ -697,7 +650,9 @@ public abstract class NanoHTTPD {
                     NanoHTTPD.LOG.log(Level.FINE, "no protocol version specified, strange. Assuming HTTP/1.1.");
                 }
                 String line = in.readLine();
-                while (line != null && !line.trim().isEmpty()) {
+                String trim = line.trim();
+                boolean empty = trim.length()==0;
+                while (line != null && !empty) {
                     int p = line.indexOf(':');
                     if (p >= 0) {
                         headers.put(line.substring(0, p).trim().toLowerCase(Locale.US), line.substring(p + 1).trim());
@@ -842,7 +797,7 @@ public abstract class NanoHTTPD {
             }
         }
 
-        @Override
+       
         public void execute() throws IOException {
             Response r = null;
             try {
@@ -1033,32 +988,28 @@ public abstract class NanoHTTPD {
             return res;
         }
 
-        @Override
+       
         public CookieHandler getCookies() {
             return this.cookies;
         }
 
-        @Override
+       
         public final Map<String, String> getHeaders() {
             return this.headers;
         }
 
-        @Override
         public final InputStream getInputStream() {
             return this.inputStream;
         }
 
-        @Override
         public final Method getMethod() {
             return this.method;
         }
 
-        @Override
         public final Map<String, String> getParms() {
             return this.parms;
         }
 
-        @Override
         public String getQueryParameterString() {
             return this.queryParameterString;
         }
@@ -1072,7 +1023,7 @@ public abstract class NanoHTTPD {
             }
         }
 
-        @Override
+       
         public final String getUri() {
             return this.uri;
         }
@@ -1090,7 +1041,7 @@ public abstract class NanoHTTPD {
             return 0;
         }
 
-        @Override
+       
         public void parseBody(Map<String, String> files) throws IOException, ResponseException {
             RandomAccessFile randomAccessFile = null;
             try {
@@ -1183,12 +1134,10 @@ public abstract class NanoHTTPD {
             return path;
         }
 
-        @Override
         public String getRemoteIpAddress() {
             return this.remoteIp;
         }
 
-        @Override
         public String getRemoteHostName() {
             return this.remoteHostname;
         }
@@ -1334,12 +1283,12 @@ public abstract class NanoHTTPD {
                 return null;
             }
 
-            @Override
+           
             public String getDescription() {
                 return "" + this.requestStatus + " " + this.description;
             }
 
-            @Override
+           
             public int getRequestStatus() {
                 return this.requestStatus;
             }
@@ -1357,7 +1306,7 @@ public abstract class NanoHTTPD {
                 super(out);
             }
 
-            @Override
+           
             public void write(int b) throws IOException {
                 byte[] data = {
                     (byte) b
@@ -1365,12 +1314,12 @@ public abstract class NanoHTTPD {
                 write(data, 0, 1);
             }
 
-            @Override
+           
             public void write(byte[] b) throws IOException {
                 write(b, 0, b.length);
             }
 
-            @Override
+           
             public void write(byte[] b, int off, int len) throws IOException {
                 if (len == 0)
                     return;
@@ -1452,7 +1401,6 @@ public abstract class NanoHTTPD {
             keepAlive = true;
         }
 
-        @Override
         public void close() throws IOException {
             if (this.data != null) {
                 this.data.close();
@@ -1690,7 +1638,6 @@ public abstract class NanoHTTPD {
             this.timeout = timeout;
         }
 
-        @Override
         public void run() {
             try {
                 myServerSocket.bind(hostname != null ? new InetSocketAddress(hostname, myPort) : new InetSocketAddress(myPort));

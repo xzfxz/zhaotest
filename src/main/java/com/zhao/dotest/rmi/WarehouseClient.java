@@ -10,10 +10,10 @@ public class WarehouseClient {
     public static void main(String[] args) throws NamingException {
         Context context = new InitialContext();
         System.out.println("RMi registry bingdings: ");
-        NamingEnumeration<NameClassPair> list = context.list("rmi://localhost/");
+        NamingEnumeration<NameClassPair> list = context.list("rmi://localhost:1099/");
         while (list.hasMoreElements()){
             System.out.println(list.next().getName());
-            String url = "rmi://localhost/warehouseServer";
+            String url = "rmi://localhost:1099/warehouseServer";
             Warehouse lookup = (Warehouse) context.lookup(url);
             String desc = "apple";
             try {
